@@ -4,10 +4,10 @@
       <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
           <v-toolbar dark color="green">
-            <v-toolbar-title>Форма регистрации</v-toolbar-title>
+            <v-toolbar-title>Форма входа</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-form v-model="valid" ref="form" validation>
+            <v-form v-model="valid" ref="form" lazy-validation>
               <v-text-field
                 prepend-icon="person"
                 name="email"
@@ -33,7 +33,7 @@
               color="primary"
               @click="onSubmit"
               :disabled="!valid"
-            >Login</v-btn>
+            >Войти</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
