@@ -6,7 +6,7 @@
 
         <v-card
           class="elevation-10 mb-3"
-          v-for="ad in ads"
+          v-for="ad in myAds"
           :key="ad.id"
         >
           <v-layout row>
@@ -38,24 +38,9 @@
 
 <script>
 export default {
-  data () {
-    return {
-      ads: [
-        {
-          title: 'First ad',
-          description: 'Hello i am description',
-          promo: false,
-          imageSrc: 'https://in-w.ru/wp-content/uploads/2016/04/Zayac.jpg',
-          id: '123'
-        },
-        {
-          title: 'Second ad',
-          description: 'Hello i am description',
-          promo: true,
-          imageSrc: 'https://avatars.mds.yandex.net/get-pdb/477388/d9cabd7c-a836-4f63-bf9d-bd5040e14953/s1200',
-          id: '1234'
-        }
-      ]
+  computed:{
+    myAds(){
+      return this.$store.getters.myAds
     }
   }
 }
