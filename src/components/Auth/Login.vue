@@ -67,7 +67,6 @@ export default {
           email: this.email,
           password: this.password
         }
-
         console.log(user)
       }
     }

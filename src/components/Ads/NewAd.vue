@@ -77,10 +77,10 @@ export default {
         const ad = {
           title: this.title,
           description: this.description,
-          promo: this.promo
+          promo: this.promo,
+          imageSrc: 'https://randomcodetips.com/content/images/2020/01/vue-js.jpeg'
         }
-
-        console.log(ad)
+        this.$store.dispatch('createAd', ad)
       }
     }
   }

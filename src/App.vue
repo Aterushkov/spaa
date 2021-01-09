@@ -52,9 +52,9 @@
 
 <script>
 export default {
-  data(){
-    return{
-      drawer:false,
+  data () {
+    return {
+      drawer: false,
       links: [
         {title: 'Войти', icon: 'lock', url: '/login'},
         {title: 'Зарегистрироваться', icon: 'face', url: '/registration'},

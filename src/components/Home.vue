@@ -53,11 +53,11 @@
 
 <script>
 export default {
- computed:{
-   promoAds(){
+ computed: {
+   promoAds () {
      return this.$store.getters.promoAds
    },
-   ads(){
+   ads () {
      return this.$store.getters.ads
    }
  }
