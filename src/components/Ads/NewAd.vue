@@ -47,7 +47,8 @@
           <v-flex xs12>
             <v-spacer></v-spacer>
             <v-btn
-              :disabled="!valid"
+              :loading="loading"
+              :disabled="!valid || loading"
               class="success"
               @click="createAd"
             >
@@ -70,6 +71,11 @@ export default {
       valid: false
     }
   },
+  computed:{
+    loading () {
+      return this.$store.getters.loading
+    }
+  },
   methods: {
     createAd () {
       if (this.$refs.form.validate()) {
@@ -81,6 +87,10 @@ export default {
           imageSrc: 'https://randomcodetips.com/content/images/2020/01/vue-js.jpeg'
         }
         this.$store.dispatch('createAd', ad)
+          .then(() => {
+            this.$router.push('/list')
+          })
+          .catch(() => {})
       }
     }
   }
