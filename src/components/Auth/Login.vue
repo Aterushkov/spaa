@@ -53,16 +53,16 @@ export default {
       valid: false,
       emailRules: [
         v => !!v || 'E-mail is required',
-        v => emailRegex.test(v) || 'E-mail введен некоректно'
+        v => emailRegex.test(v) || 'E-mail must be valid'
       ],
       passwordRules: [
         v => !!v || 'Password is required',
-        v => (v && v.length >= 6) || 'Пароль должен быть не меньше 6 символов'
+        v => (v && v.length >= 6) || 'Password must be equal or more than 6 characters'
       ]
     }
   },
-  computed:{
-    loading (){
+  computed: {
+    loading () {
       return this.$store.getters.loading
     }
   },
@@ -73,11 +73,12 @@ export default {
           email: this.email,
           password: this.password
         }
+
         this.$store.dispatch('loginUser', user)
           .then(() => {
             this.$router.push('/')
           })
-          .catch(err => console.log(err))
+          .catch(() => {})
       }
     }
   }
