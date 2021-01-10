@@ -81,6 +81,11 @@ export default {
           .catch(() => {})
       }
     }
+  },
+  created() {
+    if(this.$route.query['loginError']){
+      this.$store.dispatch('setError', 'Пожалуйста войдите в систему, что бы наблюдать эту страницу')
+    }
   }
 }
 </script>
