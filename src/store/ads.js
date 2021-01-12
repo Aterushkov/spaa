@@ -14,52 +14,64 @@ class Ad{
 
 export default {
   state: {
-    ads: [
-      {
-        title: 'First ad',
-        description: 'Hello i am description',
-        promo: false,
-        imageSrc: 'https://in-w.ru/wp-content/uploads/2016/04/Zayac.jpg',
-        id: '123'
-      },
-      {
-        title: 'Second ad',
-        description: 'Hello i am description',
-        promo: true,
-        imageSrc: 'https://avatars.mds.yandex.net/get-pdb/477388/d9cabd7c-a836-4f63-bf9d-bd5040e14953/s1200',
-        id: '1234'
-      },
-      {
-        title: 'Third ad',
-        description: 'Hello i am description',
-        promo: true,
-        imageSrc: 'https://get.pxhere.com/photo/nature-bird-bokeh-animal-wildlife-zoo-red-beak-fauna-close-up-panda-endangered-vertebrate-germany-magpie-eurasian-magpie-perching-bird-crow-like-bird-green-jay-188836.jpg',
-        id: '12345'
-      }
-    ]
+    ads: []
   },
   mutations: {
     createAd(state,payload){
       state.ads.push(payload)
+    },
+    loadAds (state, payload) {
+      state.ads = payload
     }
   },
   actions: {
     async createAd ({commit, getters}, payload) {
       commit('clearError')
       commit('setLoading', true)
+      const image = payload.image
       try{
-        const newAd = new Ad(payload.title,payload.description,getters.user.id,payload.imageSrc,payload.promo)
+        const newAd = new Ad(payload.title,payload.description,getters.user.id,'',payload.promo)
         const ad = await firebase.database().ref('ads').push(newAd)
+        const imageExt = image.name.slice(image.name.lastIndexOf('.'))
+        const fileData = await firebase.storage().ref(`ads/${ad.key}${imageExt}`).put(image)
+        const imageSrc = await firebase.storage().ref().child(fileData.ref.fullPath).getDownloadURL()
+        await  firebase.database().ref('ads').child(ad.key).update({
+          imageSrc
+        })
         commit('setLoading', false)
         commit('createAd', {
           ...newAd,
-          id: ad.key
+          id: ad.key,
+          imageSrc
         })
       }catch (error){
         commit('setError', error.message)
         commit('setLoading', false)
         throw error
       }
+    },
+    async fetchAds({commit}){
+      commit('clearError')
+      commit('setLoading', true)
+      commit('setLoading', true)
+      const resultAds = []
+      try{
+        const fbVal = await firebase.database().ref('ads').once('value')
+        const ads = fbVal.val()
+        Object.keys(ads).forEach(key =>{
+          const ad = ads[key]
+          resultAds.push(
+            new Ad(ad.title, ad.description, ad.ownerId, ad.imageSrc, ad.promo, key)
+          )
+        })
+        commit('loadAds', resultAds)
+        commit('setLoading', false)
+      }catch (error){
+        commit('setError', error.message)
+        commit('setLoading', false)
+        throw error
+      }
+
     }
   },
   getters: {
