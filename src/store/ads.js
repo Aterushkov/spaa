@@ -22,6 +22,13 @@ export default {
     },
     loadAds (state, payload) {
       state.ads = payload
+    },
+    updateAd (state, {title, description, id}) {
+      const ad = state.ads.find(a =>{
+        return a.id === id
+      })
+      ad.title = title
+      ad.description = description
     }
   },
   actions: {
@@ -53,7 +60,6 @@ export default {
     async fetchAds({commit}){
       commit('clearError')
       commit('setLoading', true)
-      commit('setLoading', true)
       const resultAds = []
       try{
         const fbVal = await firebase.database().ref('ads').once('value')
@@ -72,6 +78,24 @@ export default {
         throw error
       }
 
+    },
+    async updateAd ({commit},{title, description, id}) {
+      commit('clearError')
+      commit('setLoading', true)
+      const resultAds = []
+      try{
+         await firebase.database().ref('ads').child(id).update({
+           title,description
+         })
+        commit('updateAd', {
+          title,description,id
+        })
+        commit('setLoading', false)
+      }catch (error){
+        commit('setError', error.message)
+        commit('setLoading', false)
+        throw error
+      }
     }
   },
   getters: {
@@ -83,8 +107,10 @@ export default {
         return ad.promo
       })
     },
-    myAds (state) {
-      return state.ads
+    myAds (state, getters) {
+      return state.ads.filter(ad =>{
+        return ad.ownerId === getters.user.id
+      })
     },
     adById (state) {
       return adId => {
